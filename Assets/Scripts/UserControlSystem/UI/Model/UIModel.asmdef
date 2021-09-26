@@ -2,7 +2,8 @@
     "name": "UIModel",
     "rootNamespace": "",
     "references": [
-        "Abstractions"
+        "Abstractions",
+        "Outline"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
