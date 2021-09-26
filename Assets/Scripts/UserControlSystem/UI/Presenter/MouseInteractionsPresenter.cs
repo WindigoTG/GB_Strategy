@@ -1,30 +1,28 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MouseInteractionsPresenter : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
     [SerializeField] private SelectableValue _selectedObject;
-
-    private Outline _outline;
+    [SerializeField] private EventSystem _eventSystem;
 
     private void Update()
     {
         if (!Input.GetMouseButtonUp(0))
-        {
             return;
-        }
+
+        if (_eventSystem.IsPointerOverGameObject())
+            return;
 
         var hits = Physics.RaycastAll(_camera.ScreenPointToRay(Input.mousePosition));
 
         if (hits.Length == 0)
-        {
             return;
-        }
-
-        if (_outline != null)
-            _outline.enabled = false;
+        
 
         ISelectable selectable = null;
+        Outline outline = null;
 
         foreach (var hit in hits)
         {
@@ -32,14 +30,15 @@ public class MouseInteractionsPresenter : MonoBehaviour
 
             if (selectable != null)
             {
-                _outline = hit.collider.transform.parent.GetOrAddComponent<Outline>();
-                _outline.enabled = true;
+                outline = hit.collider.transform.parent.GetOrAddComponent<Outline>();
+                outline.enabled = true;
                 break;
             }
             
         }
 
-        _selectedObject.SetValue(selectable);
+        _selectedObject.Deselect();
+        _selectedObject.SetValue(selectable, outline);
     }
 }
 

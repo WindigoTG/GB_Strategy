@@ -7,7 +7,9 @@
         "UIView",
         "Unity.TextMeshPro",
         "Outline",
-        "Extentions"
+        "Extentions",
+        "UserControlSystem",
+        "Utils"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

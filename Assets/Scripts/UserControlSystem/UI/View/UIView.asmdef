@@ -1,7 +1,9 @@
 {
     "name": "UIView",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "Abstractions"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
