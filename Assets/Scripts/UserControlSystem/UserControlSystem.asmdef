@@ -2,9 +2,9 @@
     "name": "UserControlSystem",
     "rootNamespace": "",
     "references": [
-        "Abstractions",
         "Unity.TextMeshPro",
-        "Utils"
+        "Utils",
+        "Abstractions"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

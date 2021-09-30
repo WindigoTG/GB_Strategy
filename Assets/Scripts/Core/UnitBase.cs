@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UnitBase : MonoBehaviour, ISelectable
+public class UnitBase : MonoBehaviour, ISelectable, IAttackTarget
 {
     [SerializeField] private float _maxHealth = 100;
     [SerializeField] private Sprite _icon;
@@ -15,4 +15,5 @@ public class UnitBase : MonoBehaviour, ISelectable
     public float Health => _health;
     public float MaxHealth => _maxHealth;
     public Sprite Icon => _icon;
+    public Vector3 CurrentPosition => transform.position;
 }

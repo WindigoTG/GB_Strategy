@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class BottomLeftPresenter : MonoBehaviour
 {
@@ -10,11 +11,11 @@ public class BottomLeftPresenter : MonoBehaviour
 	[SerializeField] private Image _sliderBackground;
 	[SerializeField] private Image _sliderFillImage;
 
-	[SerializeField] private SelectableValue _selectedValue;
+	[Inject] private SelectableValue _selectedValue;
 
 	private void Start()
 	{
-		_selectedValue.OnSelected += onSelected;
+		_selectedValue.OnNewValue += onSelected;
 		onSelected(_selectedValue.CurrentValue);
 	}
 
@@ -39,6 +40,6 @@ public class BottomLeftPresenter : MonoBehaviour
 
     private void OnDestroy()
     {
-		_selectedValue.OnSelected -= onSelected;
+		_selectedValue.OnNewValue -= onSelected;
 	}
 }

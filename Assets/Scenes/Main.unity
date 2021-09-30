@@ -284,9 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fdb38b658d2cff44adf3d00ab139ca1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _selectable: {fileID: 11400000, guid: e251b4f5483098b4ebad08636bdda9e6, type: 2}
   _view: {fileID: 2010345116}
-  _context: {fileID: 11400000, guid: 7b58ddbf9c00b914893a53caec0b28a5, type: 2}
 --- !u!1001 &157886813
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -989,7 +987,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &559999396
 PrefabInstance:
@@ -1106,7 +1104,6 @@ MonoBehaviour:
   _text: {fileID: 978375467}
   _sliderBackground: {fileID: 2091238537}
   _sliderFillImage: {fileID: 2138911484}
-  _selectedValue: {fileID: 11400000, guid: e251b4f5483098b4ebad08636bdda9e6, type: 2}
 --- !u!114 &577446674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1845,6 +1842,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 774519071}
   m_CullTransparentMesh: 1
+--- !u!1 &805031275
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 805031277}
+  - component: {fileID: 805031276}
+  m_Layer: 0
+  m_Name: '[SceneContext]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &805031276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805031275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89715ad69b973a14899afa2c6730b30b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers: []
+  _installerPrefabs: []
+  _autoRun: 1
+  OnPreInstall:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPostInstall:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPreResolve:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPostResolve:
+    m_PersistentCalls:
+      m_Calls: []
+  _parentNewObjectsUnderSceneContext: 0
+  _contractNames: []
+  _parentContractNames: []
+--- !u!4 &805031277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 805031275}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.614439, y: -3.25523, z: -0.8899443}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &805721193
 GameObject:
   m_ObjectHideFlags: 0
@@ -2490,7 +2549,7 @@ GameObject:
   - component: {fileID: 1118557387}
   - component: {fileID: 1118557386}
   m_Layer: 5
-  m_Name: Button_Stop
+  m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2764,7 +2823,7 @@ GameObject:
   - component: {fileID: 1147835485}
   - component: {fileID: 1147835484}
   m_Layer: 5
-  m_Name: Button_HoldPosition
+  m_Name: Button_Stop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2966,7 +3025,7 @@ RectTransform:
   - {fileID: 752964785}
   - {fileID: 1809109369}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3035,7 +3094,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hold position
+  m_text: Stop
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3580,7 +3639,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hold position
+  m_text: Button
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4582,7 +4641,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Stop
+  m_text: Button
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4902,8 +4961,7 @@ MonoBehaviour:
   _attackButton: {fileID: 1961826864}
   _moveButton: {fileID: 1878119869}
   _patrolButton: {fileID: 805721195}
-  _holdPositionButton: {fileID: 1147835484}
-  _stopButton: {fileID: 1118557386}
+  _stopButton: {fileID: 1147835484}
   _produceUnitButton: {fileID: 1356646599}
 --- !u!4 &2030797649 stripped
 Transform:
@@ -5272,6 +5330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2104480072}
   - component: {fileID: 2104480071}
+  - component: {fileID: 2104480073}
   m_Layer: 0
   m_Name: '[MouseInteractionsHandler]'
   m_TagString: Untagged
@@ -5292,8 +5351,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 963194227}
-  _selectedObject: {fileID: 11400000, guid: e251b4f5483098b4ebad08636bdda9e6, type: 2}
   _eventSystem: {fileID: 550591698}
+  _groundTransform: {fileID: 757614480}
 --- !u!4 &2104480072
 Transform:
   m_ObjectHideFlags: 0
@@ -5306,8 +5365,20 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2104480073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104480070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 657caf470c17a724791836e8710bb94d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2122569363
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5537,5 +5608,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Chomper
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 110260321, guid: 69453c31ab5e92345b0fb38b7709c3bf, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 69453c31ab5e92345b0fb38b7709c3bf, type: 3}

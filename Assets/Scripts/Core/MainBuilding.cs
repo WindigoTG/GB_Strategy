@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MainBuilding : CommandExecutorBase<IProduceUnitCommand>, ISelectable
+public class MainBuilding : CommandExecutorBase<IProduceUnitCommand>, ISelectable, IAttackTarget
 {
 	[SerializeField] private Transform _unitsParent;
 
@@ -19,10 +19,9 @@ public class MainBuilding : CommandExecutorBase<IProduceUnitCommand>, ISelectabl
 		Instantiate(command.UnitPrefab, new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10)), Quaternion.identity, _unitsParent);
 	}
 
-
 	public float Health => _health;
 	public float MaxHealth => _maxHealth;
 	public Sprite Icon => _icon;
-
+	public Vector3 CurrentPosition => transform.position;
 }
 
