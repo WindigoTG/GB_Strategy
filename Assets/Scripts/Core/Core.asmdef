@@ -2,7 +2,7 @@
     "name": "Core",
     "rootNamespace": "",
     "references": [
-        "Abstractions"
+        "GUID:4052416bd34aec64dbcbe5879c4387bd"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
