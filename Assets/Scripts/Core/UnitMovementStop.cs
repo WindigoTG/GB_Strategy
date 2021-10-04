@@ -33,13 +33,16 @@ public class UnitMovementStop : MonoBehaviour, IAwaitable<AsyncExtensions.Void>
 
     void Update()
     {
-        if (!_agent.pathPending)
+        if (_agent.isActiveAndEnabled)
         {
-            if (_agent.remainingDistance <= _agent.stoppingDistance)
+            if (!_agent.pathPending)
             {
-                if (!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f)
+                if (_agent.remainingDistance <= _agent.stoppingDistance)
                 {
-                    OnStop?.Invoke();
+                    if (!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f)
+                    {
+                        OnStop?.Invoke();
+                    }
                 }
             }
         }

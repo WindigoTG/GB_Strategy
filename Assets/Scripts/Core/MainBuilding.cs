@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class MainBuilding : CommandExecutorBase<IProduceUnitCommand>, ISelectable, IAttackTarget
@@ -9,14 +10,41 @@ public class MainBuilding : CommandExecutorBase<IProduceUnitCommand>, ISelectabl
 
 	private float _health;
 
+	private int _buildTimer;
+	private int _unitBuildTime = 5;
+	private bool _isConstructing;
+
     private void Start()
     {
 		_health = _maxHealth;
     }
 
-	public override void ExecuteSpecificCommand(IProduceUnitCommand command)
+	public override async void ExecuteSpecificCommand(IProduceUnitCommand command)
 	{
-		Instantiate(command.UnitPrefab, new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10)), Quaternion.identity, _unitsParent);
+		if (!_isConstructing)
+		{
+			_isConstructing = true;
+			Debug.Log($"<color=#FF00FF>{name} has begun {command.UnitPrefab.name} construction</color>");
+
+			await BuildCountDown();
+
+			Instantiate(command.UnitPrefab, new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10)), Quaternion.identity, _unitsParent);
+
+			Debug.Log($"<color=#00FF00>Construction complete</color>");
+			_isConstructing = false;
+		}
+	}
+
+	private async Task BuildCountDown()
+    {
+		_buildTimer = _unitBuildTime;
+
+		do
+		{
+			Debug.Log($"<color=#FFFF00>{_buildTimer--} seconds remaining</color>");
+			await Task.Delay(1000);
+		} while (_buildTimer > 0);
+
 	}
 
 	public float Health => _health;

@@ -11,6 +11,7 @@ public abstract class CancellableCommandCreatorBase<TCommand, TArgument> : Comma
 
     protected override sealed async void ClassSpecificCommandCreation(Action<TCommand> creationCallback)
     {
+        
         _ctSource = new CancellationTokenSource();
         try
         {

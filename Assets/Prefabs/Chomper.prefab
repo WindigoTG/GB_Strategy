@@ -1173,6 +1173,7 @@ GameObject:
   - component: {fileID: 110260324}
   - component: {fileID: 2851225532312281476}
   - component: {fileID: 2677641511493625662}
+  - component: {fileID: 733978436355766314}
   m_Layer: 0
   m_Name: Chomper
   m_TagString: Untagged
@@ -1312,6 +1313,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afdd362ecafc4864ea687201af6257cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!208 &733978436355766314
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648009992815771245}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &648009992815771247
 GameObject:
   m_ObjectHideFlags: 0
