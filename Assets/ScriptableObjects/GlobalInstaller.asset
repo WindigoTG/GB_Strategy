@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6c9d1a0f07d5ab4395a3d04899449f6, type: 3}
   m_Name: GlobalInstaller
   m_EditorClassIdentifier: 
-  _legacyContext: {fileID: 0}
+  _legacyContext: {fileID: 11400000, guid: 7b58ddbf9c00b914893a53caec0b28a5, type: 2}

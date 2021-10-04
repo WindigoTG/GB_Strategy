@@ -6,6 +6,9 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 {
 	[SerializeField] private AssetsContext _legacyContext;
 
+	Vector3Value _vector3ValueInstance = new Vector3Value();
+	AttackTargetValue _attackTargetValueInstance = new AttackTargetValue();
+
 	public override void InstallBindings()
 	{
 		Container.Bind<AssetsContext>().FromInstance(_legacyContext);
@@ -27,8 +30,11 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 
 		Container.Bind<CommandButtonsModel>().AsTransient();
 
-		Container.Bind<Vector3Value>().AsCached();
+		Container.Bind<Vector3Value>().FromInstance(_vector3ValueInstance);
 		Container.Bind<SelectableValue>().AsCached();
-		Container.Bind<AttackTargetValue>().AsCached();
+		Container.Bind<AttackTargetValue>().FromInstance(_attackTargetValueInstance);
+
+		Container.Bind<IAwaitable<IAttackTarget>>().FromInstance(_attackTargetValueInstance);
+		Container.Bind<IAwaitable<Vector3>>().FromInstance(_vector3ValueInstance);
 	}
 }

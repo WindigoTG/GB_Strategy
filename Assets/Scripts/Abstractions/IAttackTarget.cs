@@ -1,1 +1,1 @@
-public interface IAttackTarget { }
+public interface IAttackTarget : IHealthHolder { }

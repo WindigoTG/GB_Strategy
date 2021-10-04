@@ -22,7 +22,7 @@ public class MouseInteractionsPresenter : MonoBehaviour
 
     private void Update()
     {
-        if (!Input.GetMouseButtonUp(0) && !Input.GetMouseButton(1))
+        if (!Input.GetMouseButtonUp(0) && !Input.GetMouseButtonUp(1))
             return;
 
         if (_eventSystem.IsPointerOverGameObject())
@@ -40,11 +40,19 @@ public class MouseInteractionsPresenter : MonoBehaviour
 
             _attackTargetObject.SetValue(target);
 
-            var ray = _camera.ScreenPointToRay(Input.mousePosition);
-            if (_groundPlane.Raycast(ray, out var enter))
+            if (target == null)
             {
-                _groundClicksRMB.SetValue(ray.origin + ray.direction * enter);
+                PerformRaycastToGetGroundClick();
             }
+        }
+    }
+
+    private void PerformRaycastToGetGroundClick()
+    {
+        var ray = _camera.ScreenPointToRay(Input.mousePosition);
+        if (_groundPlane.Raycast(ray, out var enter))
+        {
+            _groundClicksRMB.SetValue(ray.origin + ray.direction * enter);
         }
     }
 
