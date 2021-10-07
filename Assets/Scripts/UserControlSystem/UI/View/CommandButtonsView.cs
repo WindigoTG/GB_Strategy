@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx;
 
 public class CommandButtonsView : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class CommandButtonsView : MonoBehaviour
 
 	private Dictionary<Type, Button> _buttonsByExecutorType;
 
+	private List<IDisposable> _observables;
+
 	private void Start()
 	{
 		_buttonsByExecutorType = new Dictionary<Type, Button>();
@@ -24,6 +27,8 @@ public class CommandButtonsView : MonoBehaviour
 		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IPatrolCommand>), _patrolButton);
 		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IStopCommand>), _stopButton);
 		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IProduceUnitCommand>), _produceUnitButton);
+
+		_observables = new List<IDisposable>();
 	}
 
 	public void BlockInteractions(ICommandExecutor commandExecutor)
@@ -64,16 +69,18 @@ public class CommandButtonsView : MonoBehaviour
 				.First()
 				.Value;
 			button.gameObject.SetActive(true);
-			button.onClick.AddListener(() => OnClick?.Invoke(currentExecutor));
+			_observables.Add(button.OnClickAsObservable().Subscribe(_ => OnClick?.Invoke(currentExecutor)));
 		}
 	}
 
 	public void Clear()
 	{
 		foreach (var kvp in _buttonsByExecutorType)
-		{
-			kvp.Value.GetComponent<Button>().onClick.RemoveAllListeners();
 			kvp.Value.gameObject.SetActive(false);
-		}
+
+		foreach (var observable in _observables)
+			observable.Dispose();
+
+		_observables.Clear();
 	}
 }

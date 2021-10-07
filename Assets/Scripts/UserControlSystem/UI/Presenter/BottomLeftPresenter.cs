@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
+using UniRx;
+using System;
 
 public class BottomLeftPresenter : MonoBehaviour
 {
@@ -11,15 +13,14 @@ public class BottomLeftPresenter : MonoBehaviour
 	[SerializeField] private Image _sliderBackground;
 	[SerializeField] private Image _sliderFillImage;
 
-	[Inject] private SelectableValue _selectedValue;
+	[Inject] private IObservable<ISelectable> _selectedValue;
 
 	private void Start()
 	{
-		_selectedValue.OnNewValue += onSelected;
-		onSelected(_selectedValue.CurrentValue);
+		_selectedValue.Subscribe(OnSelected);
 	}
 
-	private void onSelected(ISelectable selected)
+	private void OnSelected(ISelectable selected)
 	{
 		_selectedImage.enabled = selected != null;
 		_healthSlider.gameObject.SetActive(selected != null);
@@ -36,10 +37,5 @@ public class BottomLeftPresenter : MonoBehaviour
 			_sliderBackground.color = color * 0.5f;
 			_sliderFillImage.color = color;
 		}
-	}
-
-    private void OnDestroy()
-    {
-		_selectedValue.OnNewValue -= onSelected;
 	}
 }

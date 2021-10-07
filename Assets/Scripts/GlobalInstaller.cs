@@ -1,5 +1,6 @@
 using UnityEngine;
 using Zenject;
+using System;
 
 [CreateAssetMenu(fileName = "GlobalInstaller", menuName = "Installers/GlobalInstaller")]
 public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
@@ -8,6 +9,7 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 
 	Vector3Value _vector3ValueInstance = new Vector3Value();
 	AttackTargetValue _attackTargetValueInstance = new AttackTargetValue();
+	SelectableValue _selectableValue = new SelectableValue();
 
 	public override void InstallBindings()
 	{
@@ -31,10 +33,12 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<CommandButtonsModel>().AsTransient();
 
 		Container.Bind<Vector3Value>().FromInstance(_vector3ValueInstance);
-		Container.Bind<SelectableValue>().AsCached();
+		Container.Bind<SelectableValue>().FromInstance(_selectableValue);
 		Container.Bind<AttackTargetValue>().FromInstance(_attackTargetValueInstance);
 
 		Container.Bind<IAwaitable<IAttackTarget>>().FromInstance(_attackTargetValueInstance);
 		Container.Bind<IAwaitable<Vector3>>().FromInstance(_vector3ValueInstance);
+
+		Container.Bind<IObservable<ISelectable>>().FromInstance(_selectableValue);
 	}
 }
