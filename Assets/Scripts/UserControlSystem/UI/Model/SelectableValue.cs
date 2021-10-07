@@ -1,3 +1,3 @@
 using UnityEngine;
 
-public class SelectableValue : ValueHolderBase<ISelectable> { }
+public class SelectableValue : ObservableValueHolderStateful<ISelectable> { }

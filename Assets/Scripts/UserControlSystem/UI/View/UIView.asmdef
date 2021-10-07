@@ -2,7 +2,8 @@
     "name": "UIView",
     "rootNamespace": "",
     "references": [
-        "Abstractions"
+        "Abstractions",
+        "UniRx"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

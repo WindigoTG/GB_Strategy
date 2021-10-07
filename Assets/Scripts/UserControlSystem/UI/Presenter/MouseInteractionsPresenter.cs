@@ -1,3 +1,4 @@
+using UniRx;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
@@ -18,32 +19,32 @@ public class MouseInteractionsPresenter : MonoBehaviour
     private void Start()
     {
         _groundPlane = new Plane(_groundTransform.up, 0);
+
+        Observable.EveryUpdate()
+            .Where(_ => Input.GetMouseButtonDown(0) && !_eventSystem.IsPointerOverGameObject())
+            .Subscribe(_ => GetSelectableValue());
+
+        Observable.EveryUpdate()
+            .Where(_ => Input.GetMouseButtonDown(1) && !_eventSystem.IsPointerOverGameObject())
+            .Subscribe(_ => GetAttackTargetOrPositionValue());
     }
 
-    private void Update()
+    private void GetSelectableValue()
     {
-        if (!Input.GetMouseButtonUp(0) && !Input.GetMouseButtonUp(1))
-            return;
+        PerformRaycastToGetValue<ISelectable>(out ISelectable selectable);
 
-        if (_eventSystem.IsPointerOverGameObject())
-            return;
+        _selectedObject.SetValue(selectable);
+    }
 
-        if (Input.GetMouseButtonUp(0))
+    private void GetAttackTargetOrPositionValue()
+    {
+        PerformRaycastToGetValue<IAttackTarget>(out IAttackTarget target);
+
+        _attackTargetObject.SetValue(target);
+
+        if (target == null)
         {
-            PerformRaycastToGetValue<ISelectable>(out ISelectable selectable);
-
-            _selectedObject.SetValue(selectable);
-        }
-        else
-        {
-            PerformRaycastToGetValue<IAttackTarget>(out IAttackTarget target);
-
-            _attackTargetObject.SetValue(target);
-
-            if (target == null)
-            {
-                PerformRaycastToGetGroundClick();
-            }
+            PerformRaycastToGetGroundClick();
         }
     }
 

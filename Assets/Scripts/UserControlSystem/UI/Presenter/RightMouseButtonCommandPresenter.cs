@@ -1,57 +1,63 @@
-using System.Collections;
-using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 using Zenject;
+using System;
 
 public class RightMouseButtonCommandPresenter : MonoBehaviour
 {
-    [Inject] private SelectableValue _selectable;
-    [Inject] private AttackTargetValue _attackTargetObject;
-    [Inject] private Vector3Value _groundClicksRMB;
+    [Inject] private IObservable<ISelectable> _selectable;
 
     [Inject] private CommandCreatorBase<IMoveCommand> _mover;
     [Inject] private CommandCreatorBase<IAttackCommand> _attacker;
 
-    private ISelectable _currentSelectable;
+    private IReactiveProperty<ISelectable> _currentSelectable = new ReactiveProperty<ISelectable>();
 
-    private bool _isMoveCommandPending;
-    private bool _isAttackCommandPending;
+    private IReactiveProperty<bool> _isMoveCommandPending = new ReactiveProperty<bool>(true);
+    private IReactiveProperty<bool> _isAttackCommandPending = new ReactiveProperty<bool>(true);
 
     void Start()
     {
-        _selectable.OnNewValue += OnSelected;
-        OnSelected(_selectable.CurrentValue);
-    }
+        _selectable.Subscribe(OnSelected);
 
-    void Update()
-    {
-        if (_currentSelectable != null)
-        {
-            if (!_isAttackCommandPending)
-                InitiateAttackCommandCreationProcess();
+        _currentSelectable.Where(x => x == null)
+            .Subscribe(_ =>
+                {
+                    _isMoveCommandPending.Value = true;
+                    _isAttackCommandPending.Value = true;
+                });
 
-            if (!_isMoveCommandPending)
-                InitiateMoveCommandCreationProcess();
-        }
+        _currentSelectable.Where(x => x != null)
+            .Subscribe(_ =>
+                {
+                    _isMoveCommandPending.Value = false;
+                    _isAttackCommandPending.Value = false;
+                });
+
+        _isMoveCommandPending.Where(x => x == false)
+            .Subscribe(_ => InitiateMoveCommandCreationProcess());
+
+        
+        _isAttackCommandPending.Where(x => x == false)
+            .Subscribe(_ => InitiateAttackCommandCreationProcess());
     }
 
     private void OnSelected(ISelectable selectable)
     {
-        if (_currentSelectable == selectable)
+        if (_currentSelectable.Value == selectable)
         {
             return;
         }
 
         ProcessOnCancel();
 
-        _currentSelectable = selectable;
+        _currentSelectable.Value = selectable;
     }
 
     private void InitiateMoveCommandCreationProcess()
     {
-        _isMoveCommandPending = true;
+        _isMoveCommandPending.Value = true;
 
-        var moveExecutor = (_currentSelectable as Component).GetComponentInParent<CommandExecutorBase<IMoveCommand>>();
+        var moveExecutor = (_currentSelectable.Value as Component).GetComponentInParent<CommandExecutorBase<IMoveCommand>>();
         if (moveExecutor != null)
         {
             _mover.ProcessCommandExecutor(moveExecutor, command => ExecuteCommandWrapper(moveExecutor, command));
@@ -60,9 +66,9 @@ public class RightMouseButtonCommandPresenter : MonoBehaviour
 
     private void InitiateAttackCommandCreationProcess()
     {
-        _isAttackCommandPending = true;
+        _isAttackCommandPending.Value = true;
 
-        var attackExecutor = (_currentSelectable as Component).GetComponentInParent<CommandExecutorBase<IAttackCommand>>();
+        var attackExecutor = (_currentSelectable.Value as Component).GetComponentInParent<CommandExecutorBase<IAttackCommand>>();
         if (attackExecutor != null)
         {
             _attacker.ProcessCommandExecutor(attackExecutor, command => ExecuteCommandWrapper(attackExecutor, command));
@@ -74,16 +80,16 @@ public class RightMouseButtonCommandPresenter : MonoBehaviour
         commandExecutor.ExecuteCommand(command);
 
         if (commandExecutor is CommandExecutorBase<IMoveCommand>)
-            _isMoveCommandPending = false;
+            _isMoveCommandPending.Value = false;
         else
-            _isAttackCommandPending = false;
+            _isAttackCommandPending.Value = false;
     }
 
     private void ProcessOnCancel()
     {
         _attacker.ProcessCancel();
         _mover.ProcessCancel();
-        _isMoveCommandPending = false;
-        _isAttackCommandPending = false;
+        _isMoveCommandPending.Value = true;
+        _isAttackCommandPending.Value = true;
     }
 }

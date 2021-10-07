@@ -1,1 +1,1 @@
-public class AttackTargetValue : ValueHolderBase<IAttackTarget> { }
+public class AttackTargetValue : ObservableValueHolderStateless<IAttackTarget> { }

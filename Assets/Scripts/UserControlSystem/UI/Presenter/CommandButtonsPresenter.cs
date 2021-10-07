@@ -1,15 +1,17 @@
 using Zenject;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
+using System;
 
 public class CommandButtonsPresenter : MonoBehaviour
 {
     [SerializeField] private CommandButtonsView _view;
 
-    [Inject] private SelectableValue _selectable;
+    [Inject] private IObservable<ISelectable> _selectable;
     [Inject] private CommandButtonsModel _model;
 
-    private ISelectable _currentSelectable;
+    private ReactiveProperty<ISelectable> _currentSelectable = new ReactiveProperty<ISelectable>();
 
     private void Start()
     {
@@ -18,23 +20,19 @@ public class CommandButtonsPresenter : MonoBehaviour
         _model.OnCommandCancel += _view.UnblockAllInteractions;
         _model.OnCommandAccepted += _view.BlockInteractions;
 
-        _selectable.OnNewValue += OnSelected;
-        OnSelected(_selectable.CurrentValue);
+        _selectable.Subscribe(OnSelected);
+
+        _currentSelectable.Where(x => x != null).Subscribe(_ => _model.OnSelectionChanged());
     }
 
     private void OnSelected(ISelectable selectable)
     {
-        if (_currentSelectable == selectable)
+        if (_currentSelectable.Value == selectable)
         {
             return;
         }
 
-        if (_currentSelectable != null)
-        {
-            _model.OnSelectionChanged();
-        }
-
-        _currentSelectable = selectable;
+        _currentSelectable.Value = selectable;
 
         _view.Clear();
 
