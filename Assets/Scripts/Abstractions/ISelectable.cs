@@ -1,8 +1,7 @@
 using UnityEngine;
 
-public interface ISelectable : IHealthHolder
+public interface ISelectable : IHealthHolder, IIconHolder
 {
-	Sprite Icon { get; }
 	Vector3 CurrentPosition { get; }
 }
 
