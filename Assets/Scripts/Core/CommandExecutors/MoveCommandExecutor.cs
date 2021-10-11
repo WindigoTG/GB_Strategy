@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Animator), typeof(UnitMovementStop), typeof(StopCommandExecutor))]
 public class MoveCommandExecutor : CommandExecutorBase<IMoveCommand>
@@ -10,6 +11,9 @@ public class MoveCommandExecutor : CommandExecutorBase<IMoveCommand>
     private NavMeshAgent _navMeshAgent;
     private NavMeshObstacle _navMeshObstacle;
 
+    private Queue<Vector3> _routePoints = new Queue<Vector3>();
+    private bool _isMoving;
+
     void Awake()
     {
         _stop = GetComponent<UnitMovementStop>();
@@ -17,29 +21,46 @@ public class MoveCommandExecutor : CommandExecutorBase<IMoveCommand>
         _stopExecutor = GetComponent<StopCommandExecutor>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshObstacle = GetComponent<NavMeshObstacle>();
-
+        
         MakeMovable(false);
     }
 
     public override async void ExecuteSpecificCommand(IMoveCommand command)
     {
-        Debug.Log($"<color=#009900>{name} is moving to {command.Target}</color>");
+        if (_isMoving && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
+        {
+            _routePoints.Enqueue(command.Target);
+            return;
+        }
+        else
+        {
+            _routePoints.Clear();
+            _routePoints.Enqueue(command.Target);
+        }
+
 
         try
         {
-            MakeMovable(true);
-
-            _navMeshAgent.destination = command.Target;
-            _animator.SetTrigger("Walk");
-            await _stop.WithCancellation(_stopExecutor.CToken);
+            do
+            {
+                MakeMovable(true);
+                var destination = _routePoints.Dequeue();
+                Debug.Log($"<color=#009900>{name} is moving to {destination}</color>");
+                _navMeshAgent.destination = destination;
+                _animator.SetTrigger("Walk");
+                _isMoving = true;
+                await _stop.WithCancellation(_stopExecutor.CToken);
+            } while (_routePoints.Count > 0);
         }
         catch
         {
+            _routePoints.Clear();
             _navMeshAgent.isStopped = true;
             _navMeshAgent.ResetPath();
         }
 
         _animator.SetTrigger("Idle");
+        _isMoving = false;
 
         MakeMovable(false);
     }
