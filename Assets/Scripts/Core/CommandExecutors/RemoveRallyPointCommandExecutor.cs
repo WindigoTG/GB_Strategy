@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(SetRallyPointCommandExecutor))]
@@ -10,8 +11,9 @@ public class RemoveRallyPointCommandExecutor : CommandExecutorBase<IRemoveRallyP
         _rallyPoint = GetComponent<SetRallyPointCommandExecutor>();
     }
 
-    public override void ExecuteSpecificCommand(IRemoveRallyPointCommand command)
+    public override async Task ExecuteSpecificCommand(IRemoveRallyPointCommand command)
     {
         _rallyPoint.ResetRallyPoint();
+        await Task.CompletedTask;
     }
 }

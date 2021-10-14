@@ -1,4 +1,4 @@
-public class AttackCommandCreator : CancellableCommandCreatorBase<IAttackCommand, IAttackTarget>
+public class AttackCommandCreator : CancellableCommandCreatorBase<IAttackCommand, IAttackable>
 {
-	protected override IAttackCommand CreateCommand(IAttackTarget argument) => new AttackCommand(argument);
+	protected override IAttackCommand CreateCommand(IAttackable argument) => new AttackCommand(argument);
 }

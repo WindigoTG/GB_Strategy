@@ -38,7 +38,7 @@ public class MouseInteractionsPresenter : MonoBehaviour
 
     private void GetAttackTargetOrPositionValue()
     {
-        PerformRaycastToGetValue<IAttackTarget>(out IAttackTarget target);
+        PerformRaycastToGetValue<IAttackable>(out IAttackable target);
 
         _attackTargetObject.SetValue(target);
 
