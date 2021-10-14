@@ -1,16 +1,21 @@
 using UnityEngine;
 using System.Threading;
+using System.Threading.Tasks;
 
 public class StopCommandExecutor : CommandExecutorBase<IStopCommand>
 {
-    private CancellationTokenSource _ctSource = new CancellationTokenSource();
+    private CancellationTokenSource _ctSource;
 
-    public override void ExecuteSpecificCommand(IStopCommand command)
+    public override async Task ExecuteSpecificCommand(IStopCommand command)
     {
+        if (_ctSource == null)
+            return;
+
         _ctSource.Cancel();
         _ctSource = null;
 
         Debug.Log($"<color=#FF00FF>{name} has stopped</color>");
+        await Task.CompletedTask;
     }
 
     public CancellationToken CToken

@@ -7,7 +7,7 @@ using UniRx;
 
 public class CommandButtonsView : MonoBehaviour
 {
-	public Action<ICommandExecutor> OnClick;
+	public Action<ICommandExecutor, ICommandsQueue> OnClick;
 
 	[SerializeField] private Button _attackButton;
 	[SerializeField] private Button _moveButton;
@@ -24,13 +24,13 @@ public class CommandButtonsView : MonoBehaviour
 	private void Start()
 	{
 		_buttonsByExecutorType = new Dictionary<Type, Button>();
-		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IAttackCommand>), _attackButton);
-		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IMoveCommand>), _moveButton);
-		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IPatrolCommand>), _patrolButton);
-		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IStopCommand>), _stopButton);
-		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IProduceUnitCommand>), _produceUnitButton);
-		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<ISetRallyPointCommand>), _setRallyButton);
-		_buttonsByExecutorType.Add(typeof(CommandExecutorBase<IRemoveRallyPointCommand>), _removeRallyButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IAttackCommand>), _attackButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IMoveCommand>), _moveButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IPatrolCommand>), _patrolButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IStopCommand>), _stopButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IProduceUnitCommand>), _produceUnitButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<ISetRallyPointCommand>), _setRallyButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IRemoveRallyPointCommand>), _removeRallyButton);
 
 		_observables = new List<IDisposable>();
 	}
@@ -63,7 +63,7 @@ public class CommandButtonsView : MonoBehaviour
 			.Value.gameObject;
 	}
 
-	public void MakeLayout(IEnumerable<ICommandExecutor> commandExecutors)
+	public void MakeLayout(IEnumerable<ICommandExecutor> commandExecutors, ICommandsQueue queue)
 	{
 		foreach (var currentExecutor in commandExecutors)
 		{
@@ -75,7 +75,7 @@ public class CommandButtonsView : MonoBehaviour
 				.First()
 				.Value;
 			button.gameObject.SetActive(true);
-			_observables.Add(button.OnClickAsObservable().Subscribe(_ => OnClick?.Invoke(currentExecutor)));
+			_observables.Add(button.OnClickAsObservable().Subscribe(_ => OnClick?.Invoke(currentExecutor, queue)));
 		}
 	}
 

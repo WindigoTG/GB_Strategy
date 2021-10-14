@@ -1,6 +1,7 @@
 using UnityEngine;
 using Zenject;
 using System;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "GlobalInstaller", menuName = "Installers/GlobalInstaller")]
 public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
@@ -44,7 +45,7 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<SelectableValue>().FromInstance(_selectableValue);
 		Container.Bind<AttackTargetValue>().FromInstance(_attackTargetValueInstance);
 
-		Container.Bind<IAwaitable<IAttackTarget>>().FromInstance(_attackTargetValueInstance);
+		Container.Bind<IAwaitable<IAttackable>>().FromInstance(_attackTargetValueInstance);
 		Container.Bind<IAwaitable<Vector3>>().FromInstance(_vector3ValueInstance);
 
 		Container.Bind<IObservable<ISelectable>>().FromInstance(_selectableValue);
@@ -52,5 +53,7 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<float>().WithId("Chomper").FromInstance(5f);
 		Container.Bind<string>().WithId("Chomper").FromInstance("Chomper");
 		Container.Bind<Sprite>().WithId("Chomper").FromInstance(_chomperSprite);
+
+		Container.Bind<Dictionary<int, int>>().AsSingle();
 	}
 }

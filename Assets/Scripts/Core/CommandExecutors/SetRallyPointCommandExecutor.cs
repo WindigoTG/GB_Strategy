@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class SetRallyPointCommandExecutor : CommandExecutorBase<ISetRallyPointCommand>, IRallyPointHolder
@@ -9,11 +10,12 @@ public class SetRallyPointCommandExecutor : CommandExecutorBase<ISetRallyPointCo
 
     public bool IsRallyPointSet => _isSet;
 
-    public override void ExecuteSpecificCommand(ISetRallyPointCommand command)
+    public override async Task ExecuteSpecificCommand(ISetRallyPointCommand command)
     {
         _rallyPoint = command.Target;
         _isSet = true;
         Debug.Log($"<color=#9900FF>Rally point has been set to {_rallyPoint}</color>");
+        await Task.CompletedTask;
     }
 
     public void ResetRallyPoint()

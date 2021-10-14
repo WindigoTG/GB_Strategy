@@ -1,5 +1,8 @@
+using UniRx;
+
 public interface IHealthHolder
 {
-	float Health { get; }
+	ReactiveProperty<float> ObservableHealth { get; }
+	float CurrentHealth { get; }
 	float MaxHealth { get; }
 }

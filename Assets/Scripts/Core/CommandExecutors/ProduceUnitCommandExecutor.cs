@@ -1,12 +1,16 @@
 using UnityEngine;
 using UniRx;
 using Random = UnityEngine.Random;
+using System.Threading.Tasks;
+using Zenject;
 
 [RequireComponent(typeof(SetRallyPointCommandExecutor))]
 public class ProduceUnitCommandExecutor : CommandExecutorBase<IProduceUnitCommand>, IUnitProducer
 {
 	[SerializeField] private Transform _unitsParent;
 	[SerializeField] private int _maximumUnitsInQueue = 5;
+
+	[Inject] DiContainer _diContainer;
 
 	private IRallyPointHolder _rallyPoint;
 
@@ -31,17 +35,22 @@ public class ProduceUnitCommandExecutor : CommandExecutorBase<IProduceUnitComman
 		innerTask.TimeLeft -= Time.deltaTime;
 		if (innerTask.TimeLeft <= 0)
 		{
-			removeTaskAtIndex(0);
-			var newUnit = Instantiate(innerTask.UnitPrefab,
+			RemoveTaskAtIndex(0);
+			var newUnit = _diContainer.InstantiatePrefab(innerTask.UnitPrefab,
 				new Vector3(
-					transform.position.x + Random.Range(-1.5f, 1.5f),
+					transform.position.x + Random.Range(-3f, 3),
 					0,
-					transform.position.z + Random.Range(-1.5f, 1.5f)),
+					transform.position.z + Random.Range(-3f, 3f)),
 				Quaternion.identity, _unitsParent);
 			Debug.Log($"<color=#00FF00>Construction complete</color>");
 
+			var factionMember = newUnit.GetComponent<FactionMember>();
+			factionMember.SetFaction(GetComponent<FactionMember>().FactionId);
+
 			if (_rallyPoint.IsRallyPointSet)
-				newUnit.GetComponent<CommandExecutorBase<IMoveCommand>>().ExecuteSpecificCommand(new MoveCommand(_rallyPoint.RallyPoint));
+			{
+				newUnit.GetComponent<ICommandsQueue>().EnqueueCommand(new MoveCommand(_rallyPoint.RallyPoint));
+			}
 		}
 	}
 
@@ -49,10 +58,10 @@ public class ProduceUnitCommandExecutor : CommandExecutorBase<IProduceUnitComman
 	{
 		var innerTask = (UnitProductionTask)_queue[index];
 		Debug.Log($"<color=#FF9900>Construction of {innerTask.UnitName} has been cancelled</color>");
-		removeTaskAtIndex(index); 
+		RemoveTaskAtIndex(index); 
 	}
 
-	private void removeTaskAtIndex(int index)
+	private void RemoveTaskAtIndex(int index)
 	{
 		for (int i = index; i < _queue.Count - 1; i++)
     		{
@@ -61,12 +70,13 @@ public class ProduceUnitCommandExecutor : CommandExecutorBase<IProduceUnitComman
 		_queue.RemoveAt(_queue.Count - 1);
 	}
 
-	public override void ExecuteSpecificCommand(IProduceUnitCommand command)
+	public override async Task ExecuteSpecificCommand(IProduceUnitCommand command)
 	{
 		if (_queue.Count < _maximumUnitsInQueue)
 		{
 			Debug.Log($"<color=#FF00FF>{name} has begun {command.UnitPrefab.name} construction</color>");
 			_queue.Add(new UnitProductionTask(command.ProductionTime, command.Icon, command.UnitPrefab, command.UnitName));
+			await Task.CompletedTask;
 		}
 	}
 }

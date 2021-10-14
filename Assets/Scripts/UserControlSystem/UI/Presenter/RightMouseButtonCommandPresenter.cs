@@ -11,6 +11,7 @@ public class RightMouseButtonCommandPresenter : MonoBehaviour
     [Inject] private CommandCreatorBase<IAttackCommand> _attacker;
 
     private IReactiveProperty<ISelectable> _currentSelectable = new ReactiveProperty<ISelectable>();
+    private ICommandsQueue _currentQueue;
 
     private IReactiveProperty<bool> _isMoveCommandPending = new ReactiveProperty<bool>(true);
     private IReactiveProperty<bool> _isAttackCommandPending = new ReactiveProperty<bool>(true);
@@ -24,6 +25,7 @@ public class RightMouseButtonCommandPresenter : MonoBehaviour
                 {
                     _isMoveCommandPending.Value = true;
                     _isAttackCommandPending.Value = true;
+                    _currentQueue = null;
                 });
 
         _currentSelectable.Where(x => x != null)
@@ -31,6 +33,10 @@ public class RightMouseButtonCommandPresenter : MonoBehaviour
                 {
                     _isMoveCommandPending.Value = false;
                     _isAttackCommandPending.Value = false;
+
+                    var queue = (_currentSelectable.Value as Component).GetComponentInParent<ICommandsQueue>();
+                    if (queue != null)
+                        _currentQueue = queue;
                 });
 
         _isMoveCommandPending.Where(x => x == false)
@@ -57,7 +63,7 @@ public class RightMouseButtonCommandPresenter : MonoBehaviour
     {
         _isMoveCommandPending.Value = true;
 
-        var moveExecutor = (_currentSelectable.Value as Component).GetComponentInParent<CommandExecutorBase<IMoveCommand>>();
+        var moveExecutor = (_currentSelectable.Value as Component).GetComponentInParent<ICommandExecutor<IMoveCommand>>();
         if (moveExecutor != null)
         {
             _mover.ProcessCommandExecutor(moveExecutor, command => ExecuteCommandWrapper(moveExecutor, command));
@@ -68,7 +74,7 @@ public class RightMouseButtonCommandPresenter : MonoBehaviour
     {
         _isAttackCommandPending.Value = true;
 
-        var attackExecutor = (_currentSelectable.Value as Component).GetComponentInParent<CommandExecutorBase<IAttackCommand>>();
+        var attackExecutor = (_currentSelectable.Value as Component).GetComponentInParent<ICommandExecutor<IAttackCommand>>();
         if (attackExecutor != null)
         {
             _attacker.ProcessCommandExecutor(attackExecutor, command => ExecuteCommandWrapper(attackExecutor, command));
@@ -77,9 +83,13 @@ public class RightMouseButtonCommandPresenter : MonoBehaviour
 
     public void ExecuteCommandWrapper(ICommandExecutor commandExecutor, object command)
     {
-        commandExecutor.ExecuteCommand(command);
+        if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift))
+        {
+            _currentQueue.Clear();
+        }
+        _currentQueue.EnqueueCommand(command);
 
-        if (commandExecutor is CommandExecutorBase<IMoveCommand>)
+        if (commandExecutor is ICommandExecutor<IMoveCommand>)
             _isMoveCommandPending.Value = false;
         else
             _isAttackCommandPending.Value = false;
