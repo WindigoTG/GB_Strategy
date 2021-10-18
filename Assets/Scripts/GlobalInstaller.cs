@@ -8,6 +8,7 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 {
 	[SerializeField] AssetsContext _legacyContext;
 	[SerializeField] Sprite _chomperSprite;
+	[SerializeField] Sprite _gathererSprite;
 
 	Vector3Value _vector3ValueInstance = new Vector3Value();
 	AttackTargetValue _attackTargetValueInstance = new AttackTargetValue();
@@ -17,8 +18,11 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 	{
 		Container.Bind<AssetsContext>().FromInstance(_legacyContext);
 
-		Container.Bind<CommandCreatorBase<IProduceUnitCommand>>()
-			.To<ProduceUnitCommandCreator>().AsTransient();
+		Container.Bind<CommandCreatorBase<IProduceCombatUnitCommand>>()
+			.To<ProduceCombatUnitCommandCreator>().AsTransient();
+
+		Container.Bind<CommandCreatorBase<IProduceGathererUnitCommand>>()
+			.To<ProduceGathererUnitCommandCreator>().AsTransient();
 
 		Container.Bind<CommandCreatorBase<IAttackCommand>>()
 			.To<AttackCommandCreator>().AsTransient();
@@ -41,6 +45,9 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<CommandCreatorBase<IHoldPositionCommand>>()
 			.To<HoldPositionCommandCreator>().AsTransient();
 
+		Container.Bind<CommandCreatorBase<IGatherResourceCommand>>()
+			.To<GatherResourceCommandCreator>().AsTransient();
+
 		Container.Bind<CommandButtonsModel>().AsTransient();
 		Container.Bind<BottomCenterModel>().AsTransient();
 
@@ -56,6 +63,10 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<float>().WithId("Chomper").FromInstance(5f);
 		Container.Bind<string>().WithId("Chomper").FromInstance("Chomper");
 		Container.Bind<Sprite>().WithId("Chomper").FromInstance(_chomperSprite);
+
+		Container.Bind<float>().WithId("Gatherer").FromInstance(5f);
+		Container.Bind<string>().WithId("Gatherer").FromInstance("Gatherer");
+		Container.Bind<Sprite>().WithId("Gatherer").FromInstance(_gathererSprite);
 
 		Container.Bind<Dictionary<int, int>>().AsSingle();
 	}

@@ -3,7 +3,7 @@ using UniRx;
 
 public class AutoAttackAgent : MonoBehaviour
 {
-    [SerializeField] private UnitCommandsQueue _queue;
+    [SerializeField] private CombatUnitCommandsQueue _queue;
 
     private void Start()
     {

@@ -1,7 +1,7 @@
 using Zenject;
 using UnityEngine;
 
-public class UnitInstaller : MonoInstaller
+public class CombatUnitInstaller : MonoInstaller
 {
     [SerializeField] private AttackerParallelnfoUpdater _attackerParallelnfoUpdater;
     [SerializeField] private FactionMemberParallelInfoUpdater _factionMemberParallelInfoUpdater;

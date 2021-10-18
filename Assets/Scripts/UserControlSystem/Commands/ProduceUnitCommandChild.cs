@@ -1,4 +1,4 @@
-public class ProduceUnitCommandChild : ProduceUnitCommand
+public class ProduceUnitCommandChild : ProduceCombatUnitCommand
 {
     
 }

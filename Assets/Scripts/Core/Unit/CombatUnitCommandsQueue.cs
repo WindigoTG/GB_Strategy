@@ -2,13 +2,13 @@ using UnityEngine;
 using UniRx;
 using Zenject;
 
-public class UnitCommandsQueue : MonoBehaviour, ICommandsQueue
+public class CombatUnitCommandsQueue : MonoBehaviour, ICommandsQueue
 {
-	[Inject] CommandExecutorBase<IMoveCommand> _moveCommandExecutor;
-	[Inject] CommandExecutorBase<IPatrolCommand> _patrolCommandExecutor;
-	[Inject] CommandExecutorBase<IAttackCommand> _attackCommandExecutor;
-	[Inject] CommandExecutorBase<IStopCommand> _stopCommandExecutor;
-	[Inject] CommandExecutorBase<IHoldPositionCommand> _holdPositionCommandExecutor;
+    [Inject] CommandExecutorBase<IMoveCommand> _moveCommandExecutor;
+    [Inject] CommandExecutorBase<IPatrolCommand> _patrolCommandExecutor;
+    [Inject] CommandExecutorBase<IAttackCommand> _attackCommandExecutor;
+    [Inject] CommandExecutorBase<IStopCommand> _stopCommandExecutor;
+    [Inject] CommandExecutorBase<IHoldPositionCommand> _holdPositionCommandExecutor;
 
 	private ReactiveCollection<ICommand> _commandsAwaitingExecution = new ReactiveCollection<ICommand>();
 
@@ -19,8 +19,6 @@ public class UnitCommandsQueue : MonoBehaviour, ICommandsQueue
 	{
 		_commandsAwaitingExecution
 			.ObserveAdd().Subscribe(OnNewCommand).AddTo(this);
-
-		TryGetComponent<IHoldPositionExecutor>(out _holdPositionExecutor);
 	}
 
 	private void OnNewCommand(ICommand command, int index)

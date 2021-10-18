@@ -13,10 +13,12 @@ public class CommandButtonsView : MonoBehaviour
 	[SerializeField] private Button _moveButton;
 	[SerializeField] private Button _patrolButton;
 	[SerializeField] private Button _stopButton;
-	[SerializeField] private Button _produceUnitButton;
+	[SerializeField] private Button _produceCombatUnitButton;
+	[SerializeField] private Button _produceGathererUnitButton;
 	[SerializeField] private Button _setRallyButton;
 	[SerializeField] private Button _removeRallyButton;
 	[SerializeField] private Button _holdPositionButton;
+	[SerializeField] private Button _gatherResourceButton;
 
 	private Dictionary<Type, Button> _buttonsByExecutorType;
 
@@ -29,10 +31,12 @@ public class CommandButtonsView : MonoBehaviour
 		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IMoveCommand>), _moveButton);
 		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IPatrolCommand>), _patrolButton);
 		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IStopCommand>), _stopButton);
-		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IProduceUnitCommand>), _produceUnitButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IProduceCombatUnitCommand>), _produceCombatUnitButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IProduceGathererUnitCommand>), _produceGathererUnitButton);
 		_buttonsByExecutorType.Add(typeof(ICommandExecutor<ISetRallyPointCommand>), _setRallyButton);
 		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IRemoveRallyPointCommand>), _removeRallyButton);
 		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IHoldPositionCommand>), _holdPositionButton);
+		_buttonsByExecutorType.Add(typeof(ICommandExecutor<IGatherResourceCommand>), _gatherResourceButton);
 
 		_observables = new List<IDisposable>();
 	}
@@ -52,10 +56,12 @@ public class CommandButtonsView : MonoBehaviour
 		_moveButton.GetComponent<Selectable>().interactable = value;
 		_patrolButton.GetComponent<Selectable>().interactable = value;
 		_stopButton.GetComponent<Selectable>().interactable = value;
-		_produceUnitButton.GetComponent<Selectable>().interactable = value;
+		_produceCombatUnitButton.GetComponent<Selectable>().interactable = value;
+		_produceGathererUnitButton.GetComponent<Selectable>().interactable = value;
 		_setRallyButton.GetComponent<Selectable>().interactable = value;
 		_removeRallyButton.GetComponent<Selectable>().interactable = value;
 		_holdPositionButton.GetComponent<Selectable>().interactable = value;
+		_gatherResourceButton.GetComponent<Selectable>().interactable = value;
 	}
 
 	private GameObject GetButtonGameObjectByType(Type executorInstanceType)

@@ -1,16 +1,8 @@
 using System;
 using Zenject;
 
-public class ProduceUnitCommandCreator : CommandCreatorBase<IProduceUnitCommand>
+public abstract class ProduceUnitCommandCreator<T> : CommandCreatorBase<T> where T : class, IProduceUnitCommand
 {
-	[Inject] private AssetsContext _context;
-	[Inject] private DiContainer _diContainer;
-
-	protected override void ClassSpecificCommandCreation(Action<IProduceUnitCommand> creationCallback)
-	{
-		var produceUnitCommand = _context.Inject(new ProduceUnitCommandChild());
-		_diContainer.Inject(produceUnitCommand);
-		creationCallback?.Invoke(produceUnitCommand);
-
-	}
+	[Inject] protected AssetsContext _context;
+	[Inject] protected DiContainer _diContainer;
 }
