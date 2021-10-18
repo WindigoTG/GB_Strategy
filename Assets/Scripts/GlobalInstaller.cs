@@ -38,6 +38,9 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<CommandCreatorBase<IRemoveRallyPointCommand>>()
 			.To<RemoveRallyPointCommandCreator>().AsTransient();
 
+		Container.Bind<CommandCreatorBase<IHoldPositionCommand>>()
+			.To<HoldPositionCommandCreator>().AsTransient();
+
 		Container.Bind<CommandButtonsModel>().AsTransient();
 		Container.Bind<BottomCenterModel>().AsTransient();
 

@@ -8,14 +8,19 @@ public class UnitCommandsQueue : MonoBehaviour, ICommandsQueue
 	[Inject] CommandExecutorBase<IPatrolCommand> _patrolCommandExecutor;
 	[Inject] CommandExecutorBase<IAttackCommand> _attackCommandExecutor;
 	[Inject] CommandExecutorBase<IStopCommand> _stopCommandExecutor;
+	[Inject] CommandExecutorBase<IHoldPositionCommand> _holdPositionCommandExecutor;
 
 	private ReactiveCollection<ICommand> _commandsAwaitingExecution = new ReactiveCollection<ICommand>();
+
+	private IHoldPositionExecutor _holdPositionExecutor;
 
 	[Inject]
 	private void Init()
 	{
 		_commandsAwaitingExecution
 			.ObserveAdd().Subscribe(OnNewCommand).AddTo(this);
+
+		TryGetComponent<IHoldPositionExecutor>(out _holdPositionExecutor);
 	}
 
 	private void OnNewCommand(ICommand command, int index)
@@ -28,10 +33,12 @@ public class UnitCommandsQueue : MonoBehaviour, ICommandsQueue
 
 	private async void ExecuteCommand(ICommand command)
 	{
-		await _moveCommandExecutor.TryExecuteCommand(command);
-		await _patrolCommandExecutor.TryExecuteCommand(command);
-		await _attackCommandExecutor.TryExecuteCommand(command);
-		await _stopCommandExecutor.TryExecuteCommand(command);
+		await _moveCommandExecutor?.TryExecuteCommand(command);
+		await _patrolCommandExecutor?.TryExecuteCommand(command);
+		await _attackCommandExecutor?.TryExecuteCommand(command);
+		await _stopCommandExecutor?.TryExecuteCommand(command);
+		await _holdPositionCommandExecutor?.TryExecuteCommand(command);
+
 		if (_commandsAwaitingExecution.Count > 0)
 		{
 			_commandsAwaitingExecution.RemoveAt(0);
@@ -50,6 +57,10 @@ public class UnitCommandsQueue : MonoBehaviour, ICommandsQueue
 	public void EnqueueCommand(object wrappedCommand)
 	{
 		var command = wrappedCommand as ICommand;
+
+		if (!(command is IAutoAttackCommand))
+			_holdPositionExecutor?.CancelHoldPosition();
+
 		_commandsAwaitingExecution.Add(command);
 	}
 
@@ -58,4 +69,6 @@ public class UnitCommandsQueue : MonoBehaviour, ICommandsQueue
 		_commandsAwaitingExecution.Clear();
 		_stopCommandExecutor.ExecuteSpecificCommand(new StopCommand());
 	}
+
+	public ICommand CurrentCommand => _commandsAwaitingExecution.Count > 0 ? _commandsAwaitingExecution[0] : default;
 }

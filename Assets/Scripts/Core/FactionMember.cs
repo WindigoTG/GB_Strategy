@@ -2,15 +2,36 @@ using UnityEngine;
 using Zenject;
 using System.Collections.Generic;
 
+[RequireComponent(typeof(Outline))]
 public class FactionMember : MonoBehaviour, IFactionMember
 {
-	[SerializeField] private int _factionId;
+	[SerializeField][Range(0,6)] private int _factionId;
+
+	private Outline _outline;
+	private Color[] Colors =
+		{
+			Color.white,
+			Color.green,
+			Color.red,
+			Color.blue,
+			Color.cyan,
+			Color.magenta,
+			Color.yellow,
+		};
 
 	[Inject]
 	private readonly Dictionary<int, int> _factionMemberCounter;
 
+    private void Awake()
+    {
+		_outline = GetComponent<Outline>();
+	}
+
     private void Start()
     {
+		_outline.OutlineColor = Colors[_factionId];
+		_outline.enabled = false;
+
 		if (_factionId != 0)
 			AddMemberToCount();
     }
@@ -18,7 +39,6 @@ public class FactionMember : MonoBehaviour, IFactionMember
     public void SetFaction(int factionId)
 	{
 		_factionId = factionId;
-		AddMemberToCount();
 	}
 
 	private void AddMemberToCount()

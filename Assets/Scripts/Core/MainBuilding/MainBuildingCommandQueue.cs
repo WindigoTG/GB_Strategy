@@ -15,4 +15,6 @@ public class MainBuildingCommandQueue : MonoBehaviour, ICommandsQueue
 		await _setRallyPointCommandExecutor.TryExecuteCommand(command);
 		await _removeRallyPointCommandExecutor.TryExecuteCommand(command);
 	}
+
+	public ICommand CurrentCommand => default;
 }

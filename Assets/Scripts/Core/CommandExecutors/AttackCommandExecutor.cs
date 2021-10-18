@@ -9,6 +9,8 @@ public partial class AttackCommandExecutor : CommandExecutorBase<IAttackCommand>
 {
 	private Animator _animator;
 	private StopCommandExecutor _stopCommandExecutor;
+	private IHoldPositionExecutor _holdPositionExecutor;
+	private IAutomaticAttacker _automaticAttacker;
 	private NavMeshAgent _navMeshAgent;
 	private UnitNavigationStateManager _navigationState;
 
@@ -48,6 +50,8 @@ public partial class AttackCommandExecutor : CommandExecutorBase<IAttackCommand>
 		_stopCommandExecutor = GetComponent<StopCommandExecutor>();
 		_navMeshAgent = GetComponent<NavMeshAgent>();
 		_navigationState = GetComponent<UnitNavigationStateManager>();
+		TryGetComponent<IHoldPositionExecutor>(out _holdPositionExecutor);
+		TryGetComponent<IAutomaticAttacker>(out _automaticAttacker);
 	}
 
 	private void StartMovingToPosition(Vector3 position)
@@ -59,8 +63,12 @@ public partial class AttackCommandExecutor : CommandExecutorBase<IAttackCommand>
 
 	private void StartAttackingTargets(IAttackable target)
 	{
-		GetComponent<NavMeshAgent>().isStopped = true;
-		GetComponent<NavMeshAgent>().ResetPath();
+		var navMeshAgent = GetComponent<NavMeshAgent>();
+		if (navMeshAgent.isActiveAndEnabled)
+		{
+			navMeshAgent.isStopped = true;
+			navMeshAgent.ResetPath();
+		}
 		_animator.SetTrigger("Attack");
 		target.TakeDamage(GetComponent<IDamageDealer>().Damage);
 	}

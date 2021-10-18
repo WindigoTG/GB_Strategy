@@ -15,6 +15,7 @@ public class CommandButtonsModel
 	[Inject] private CommandCreatorBase<IPatrolCommand> _patroller;
 	[Inject] private CommandCreatorBase<ISetRallyPointCommand> _rallySetter;
 	[Inject] private CommandCreatorBase<IRemoveRallyPointCommand> _rallyRemover;
+	[Inject] private CommandCreatorBase<IHoldPositionCommand> _positionHolder;
 
 	private bool _isCommandPending;
 
@@ -34,6 +35,7 @@ public class CommandButtonsModel
 		_patroller.ProcessCommandExecutor(commandExecutor, command => ExecuteCommandWrapper(command, commandsQueue));
 		_rallySetter.ProcessCommandExecutor(commandExecutor, command => ExecuteCommandWrapper(command, commandsQueue));
 		_rallyRemover.ProcessCommandExecutor(commandExecutor, command => ExecuteCommandWrapper(command, commandsQueue));
+		_positionHolder.ProcessCommandExecutor(commandExecutor, command => ExecuteCommandWrapper(command, commandsQueue));
 	}
 
 	public void ExecuteCommandWrapper(object command, ICommandsQueue commandsQueue)
@@ -63,6 +65,7 @@ public class CommandButtonsModel
 		_patroller.ProcessCancel();
 		_rallySetter.ProcessCancel();
 		_rallyRemover.ProcessCancel();
+		_positionHolder.ProcessCancel();
 
 		OnCommandCancel?.Invoke();
 	}

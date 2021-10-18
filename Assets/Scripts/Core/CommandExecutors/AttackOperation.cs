@@ -74,9 +74,18 @@ public partial class AttackCommandExecutor : CommandExecutorBase<IAttackCommand>
                 var distanceToTarget = vector.magnitude;
                 if (distanceToTarget > _attackCommandExecutor._attackingDistance)
                 {
-                    var finalDestination = targetPosition - vector.normalized * (_attackCommandExecutor._attackingDistance * 0.9f);
-                    _attackCommandExecutor._targetPositions.OnNext(finalDestination);
-                    Thread.Sleep(100);
+                    if (_attackCommandExecutor._holdPositionExecutor != null &&
+                        _attackCommandExecutor._holdPositionExecutor.IsHoldingPosition)
+                    {
+                        if (distanceToTarget > _attackCommandExecutor._automaticAttacker.VisionRadius)
+                        Cancel();
+                    }
+                    else
+                    {
+                        var finalDestination = targetPosition - vector.normalized * (_attackCommandExecutor._attackingDistance * 0.9f);
+                        _attackCommandExecutor._targetPositions.OnNext(finalDestination);
+                        Thread.Sleep(100);
+                    }
                 }
                 else if (ourRotation != Quaternion.LookRotation(vector))
                 {
