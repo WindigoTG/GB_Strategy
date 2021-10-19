@@ -21,7 +21,7 @@ public abstract class ProduceUnitCommandExecutor<T> : CommandExecutorBase<T>, IU
 
 	public override async Task ExecuteSpecificCommand(T command)
 	{
-		_productionQueue.Enqueue(new UnitProductionTask(command.ProductionTime, command.Icon, command.UnitPrefab, command.UnitName));
+		_productionQueue.Enqueue(new UnitProductionTask(command.ProductionTime, command.Icon, command.UnitPrefab, command.UnitName, command.ResourceCost));
 		await Task.CompletedTask;
 	}
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 using Zenject;
 using System;
 using System.Collections.Generic;
+using UniRx;
 
 [CreateAssetMenu(fileName = "GlobalInstaller", menuName = "Installers/GlobalInstaller")]
 public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
@@ -14,7 +15,16 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 	AttackTargetValue _attackTargetValueInstance = new AttackTargetValue();
 	SelectableValue _selectableValue = new SelectableValue();
 
-    public override void InstallBindings()
+	Dictionary<ResourceType, int> _chomperCost = new Dictionary<ResourceType, int>() { { ResourceType.Crystal, 50} };
+	Dictionary<ResourceType, int> _gathererCost = new Dictionary<ResourceType, int>() { { ResourceType.Crystal, 30 } };
+
+	ReactiveDictionary<int, Dictionary<ResourceType, int>> _resources = new ReactiveDictionary<int, Dictionary<ResourceType, int>>()
+	{
+		{ 1, new Dictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } },
+		{ 2, new Dictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } }
+	};
+
+	public override void InstallBindings()
 	{
 		Container.Bind<AssetsContext>().FromInstance(_legacyContext);
 
@@ -64,10 +74,15 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<string>().WithId("Chomper").FromInstance("Chomper");
 		Container.Bind<Sprite>().WithId("Chomper").FromInstance(_chomperSprite);
 
-		Container.Bind<float>().WithId("Gatherer").FromInstance(5f);
+		Container.Bind<float>().WithId("Gatherer").FromInstance(3f);
 		Container.Bind<string>().WithId("Gatherer").FromInstance("Gatherer");
 		Container.Bind<Sprite>().WithId("Gatherer").FromInstance(_gathererSprite);
 
 		Container.Bind<Dictionary<int, int>>().AsSingle();
+
+		Container.Bind<Dictionary<ResourceType, int>>().WithId("Chomper").FromInstance(_chomperCost);
+		Container.Bind<Dictionary<ResourceType, int>>().WithId("Gatherer").FromInstance(_gathererCost);
+
+		Container.Bind<ReactiveDictionary<int, Dictionary<ResourceType, int>>>().FromInstance(_resources);
 	}
 }

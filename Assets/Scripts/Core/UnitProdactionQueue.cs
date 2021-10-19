@@ -1,6 +1,7 @@
 using UnityEngine;
 using UniRx;
 using Zenject;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(SetRallyPointCommandExecutor))]
 public class UnitProdactionQueue : MonoBehaviour
@@ -11,14 +12,16 @@ public class UnitProdactionQueue : MonoBehaviour
 	[Inject] DiContainer _diContainer;
 
 	private IRallyPointHolder _rallyPoint;
+	private FactionMember _factionMember;
 
 	private ReactiveCollection<IUnitProductionTask> _queue = new ReactiveCollection<IUnitProductionTask>();
 
-	public IReadOnlyReactiveCollection<IUnitProductionTask> Queue => _queue;
+	[Inject] ReactiveDictionary<int, Dictionary<ResourceType, int>> _resourcesRepository;
 
 	private void Awake()
 	{
 		_rallyPoint = GetComponent<SetRallyPointCommandExecutor>();
+		_factionMember = GetComponent<FactionMember>();
 	}
 
 	private void Update()
@@ -56,14 +59,42 @@ public class UnitProdactionQueue : MonoBehaviour
     {
 		if (_queue.Count < _maximumUnitsInQueue)
 		{
-			Debug.Log($"<color=#FF00FF>{name} has begun {task.UnitName} construction</color>");
-			_queue.Add(task);
+			lock (this)
+			{
+				var factionResources = _resourcesRepository[_factionMember.FactionId];
+				bool isEnoughResources = true;
+
+				foreach (var resourceeCost in task.ResourceCost)
+					if (factionResources[resourceeCost.Key] < resourceeCost.Value)
+					{
+						isEnoughResources = false;
+						Debug.Log($"<color=#FF9900>Not enough {resourceeCost.Key}</color>");
+						break;
+					}
+
+				if (isEnoughResources)
+				{
+					Debug.Log($"<color=#FF00FF>{name} has begun {task.UnitName} construction</color>");
+
+					foreach (var resourceCost in task.ResourceCost)
+						factionResources[resourceCost.Key] -= resourceCost.Value;
+
+					_queue.Add(task);
+				}
+			}
 		}
 	}
 
 	public void Cancel(int index)
 	{
 		var innerTask = (UnitProductionTask)_queue[index];
+		lock (this)
+		{
+			var factionResources = _resourcesRepository[_factionMember.FactionId];
+
+			foreach (var resourceCost in innerTask.ResourceCost)
+				factionResources[resourceCost.Key] += resourceCost.Value;
+		}
 		Debug.Log($"<color=#FF9900>Construction of {innerTask.UnitName} has been cancelled</color>");
 		RemoveTaskAtIndex(index);
 	}
@@ -77,4 +108,5 @@ public class UnitProdactionQueue : MonoBehaviour
 		_queue.RemoveAt(_queue.Count - 1);
 	}
 
+	public IReadOnlyReactiveCollection<IUnitProductionTask> Queue => _queue;
 }
