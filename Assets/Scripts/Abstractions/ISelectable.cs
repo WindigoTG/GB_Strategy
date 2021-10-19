@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface ISelectable : IHealthHolder, IIconHolder
+public interface ISelectable : IIconHolder
 {
 	Vector3 CurrentPosition { get; }
 }

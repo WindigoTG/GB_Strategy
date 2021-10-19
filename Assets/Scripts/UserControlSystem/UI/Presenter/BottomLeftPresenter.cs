@@ -37,19 +37,29 @@ public class BottomLeftPresenter : MonoBehaviour
 
 			_selectedImage.sprite = selected.Icon;
 			_healthSlider.minValue = 0;
-			_healthSlider.maxValue = selected.MaxHealth;
 
-			_observation = selected.ObservableHealth.Subscribe(UpdateHealth);
+			var healthHolder = selected as IHealthHolder;
 
-			UpdateHealth(selected.CurrentHealth);
+			_healthSlider.gameObject.SetActive(healthHolder != null);
+			_text.enabled = healthHolder != null;
+
+			if (healthHolder != null)
+			{
+				_healthSlider.maxValue = healthHolder.MaxHealth;
+
+				_observation = healthHolder.ObservableHealth.Subscribe(UpdateHealth);
+
+				UpdateHealth(healthHolder.CurrentHealth);
+			}
+				
 		}
 	}
 
 	private void UpdateHealth(float value)
     {
-		_text.text = $"{value}/{_currentSelectable.MaxHealth}";
+		_text.text = $"{value}/{(_currentSelectable as IHealthHolder).MaxHealth}";
 		_healthSlider.value = value;
-		var color = Color.Lerp(Color.red, Color.green, value / (float)_currentSelectable.MaxHealth);
+		var color = Color.Lerp(Color.red, Color.green, value / (float)(_currentSelectable as IHealthHolder).MaxHealth);
 		_sliderBackground.color = color * 0.5f;
 		_sliderFillImage.color = color;
 

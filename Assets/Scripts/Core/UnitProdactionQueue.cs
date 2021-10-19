@@ -16,7 +16,7 @@ public class UnitProdactionQueue : MonoBehaviour
 
 	private ReactiveCollection<IUnitProductionTask> _queue = new ReactiveCollection<IUnitProductionTask>();
 
-	[Inject] ReactiveDictionary<int, Dictionary<ResourceType, int>> _resourcesRepository;
+	[Inject] Dictionary<int, ReactiveDictionary<ResourceType, int>> _resourcesRepository;
 
 	private void Awake()
 	{

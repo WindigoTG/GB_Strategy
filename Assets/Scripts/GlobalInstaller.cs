@@ -11,6 +11,11 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 	[SerializeField] Sprite _chomperSprite;
 	[SerializeField] Sprite _gathererSprite;
 
+	[SerializeField] GameObject _resorceViewPrefab;
+	[SerializeField] GameObject _factionResorcesViewPrefab;
+
+	[SerializeField] ResourceIconByType _resourceIconByTypeContainer;
+
 	Vector3Value _vector3ValueInstance = new Vector3Value();
 	AttackTargetValue _attackTargetValueInstance = new AttackTargetValue();
 	SelectableValue _selectableValue = new SelectableValue();
@@ -18,10 +23,10 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 	Dictionary<ResourceType, int> _chomperCost = new Dictionary<ResourceType, int>() { { ResourceType.Crystal, 50} };
 	Dictionary<ResourceType, int> _gathererCost = new Dictionary<ResourceType, int>() { { ResourceType.Crystal, 30 } };
 
-	ReactiveDictionary<int, Dictionary<ResourceType, int>> _resources = new ReactiveDictionary<int, Dictionary<ResourceType, int>>()
+	Dictionary<int, ReactiveDictionary<ResourceType, int>> _resources = new Dictionary<int, ReactiveDictionary<ResourceType, int>>()
 	{
-		{ 1, new Dictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } },
-		{ 2, new Dictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } }
+		{ 1, new ReactiveDictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } },
+		{ 2, new ReactiveDictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } }
 	};
 
 	public override void InstallBindings()
@@ -83,6 +88,11 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<Dictionary<ResourceType, int>>().WithId("Chomper").FromInstance(_chomperCost);
 		Container.Bind<Dictionary<ResourceType, int>>().WithId("Gatherer").FromInstance(_gathererCost);
 
-		Container.Bind<ReactiveDictionary<int, Dictionary<ResourceType, int>>>().FromInstance(_resources);
+		Container.Bind<Dictionary<int, ReactiveDictionary<ResourceType, int>>>().FromInstance(_resources);
+
+		Container.Bind<GameObject>().WithId("FactionResources").FromInstance(_factionResorcesViewPrefab);
+		Container.Bind<GameObject>().WithId("ResourceView").FromInstance(_resorceViewPrefab);
+
+		Container.Bind<ResourceIconByType>().FromInstance(_resourceIconByTypeContainer);
 	}
 }
