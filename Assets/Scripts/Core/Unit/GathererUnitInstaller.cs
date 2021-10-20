@@ -8,8 +8,9 @@ public class GathererUnitInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-
-        Container.Bind<IHealthHolder>().FromComponentInChildren();
+        Container.Bind<float>().WithId("InteractionDistance").FromInstance(3f);
+        Container.Bind<float>().WithId("GatherSpeed").FromInstance(2); 
+        Container.Bind<int>().WithId("MaximumResourceLoad").FromInstance(10);
 
         Container
             .Bind<ITickable>()

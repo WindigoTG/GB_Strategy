@@ -18,7 +18,8 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 
 	Vector3Value _vector3ValueInstance = new Vector3Value();
 	AttackTargetValue _attackTargetValueInstance = new AttackTargetValue();
-	SelectableValue _selectableValue = new SelectableValue();
+	SelectableValue _selectableValueInstance = new SelectableValue();
+	GatherableResourceValue _gatherableResourceValueInstance = new GatherableResourceValue();
 
 	Dictionary<ResourceType, int> _chomperCost = new Dictionary<ResourceType, int>() { { ResourceType.Crystal, 50} };
 	Dictionary<ResourceType, int> _gathererCost = new Dictionary<ResourceType, int>() { { ResourceType.Crystal, 30 } };
@@ -28,6 +29,8 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		{ 1, new ReactiveDictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } },
 		{ 2, new ReactiveDictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } }
 	};
+
+	List<IResourceRecipient> _resourceRecipients = new List<IResourceRecipient>();
 
 	public override void InstallBindings()
 	{
@@ -67,13 +70,15 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<BottomCenterModel>().AsTransient();
 
 		Container.Bind<Vector3Value>().FromInstance(_vector3ValueInstance);
-		Container.Bind<SelectableValue>().FromInstance(_selectableValue);
+		Container.Bind<SelectableValue>().FromInstance(_selectableValueInstance);
 		Container.Bind<AttackTargetValue>().FromInstance(_attackTargetValueInstance);
+		Container.Bind<GatherableResourceValue>().FromInstance(_gatherableResourceValueInstance);
 
 		Container.Bind<IAwaitable<IAttackable>>().FromInstance(_attackTargetValueInstance);
 		Container.Bind<IAwaitable<Vector3>>().FromInstance(_vector3ValueInstance);
+		Container.Bind<IAwaitable<IGatherable>>().FromInstance(_gatherableResourceValueInstance);
 
-		Container.Bind<IObservable<ISelectable>>().FromInstance(_selectableValue);
+		Container.Bind<IObservable<ISelectable>>().FromInstance(_selectableValueInstance);
 
 		Container.Bind<float>().WithId("Chomper").FromInstance(5f);
 		Container.Bind<string>().WithId("Chomper").FromInstance("Chomper");
@@ -94,5 +99,7 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<GameObject>().WithId("ResourceView").FromInstance(_resorceViewPrefab);
 
 		Container.Bind<ResourceIconByType>().FromInstance(_resourceIconByTypeContainer);
+
+		Container.Bind<List<IResourceRecipient>>().FromInstance(_resourceRecipients);
 	}
 }

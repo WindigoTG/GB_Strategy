@@ -6,6 +6,7 @@ public class GathererUnitCommandsQueue : MonoBehaviour, ICommandsQueue
 {
     [Inject] CommandExecutorBase<IMoveCommand> _moveCommandExecutor;
     [Inject] CommandExecutorBase<IStopCommand> _stopCommandExecutor;
+	[Inject] CommandExecutorBase<IGatherResourceCommand> _gatherResourceCommandExecutor;
 
 	private ReactiveCollection<ICommand> _commandsAwaitingExecution = new ReactiveCollection<ICommand>();
 
@@ -28,6 +29,7 @@ public class GathererUnitCommandsQueue : MonoBehaviour, ICommandsQueue
 	{
 		await _moveCommandExecutor?.TryExecuteCommand(command);
 		await _stopCommandExecutor?.TryExecuteCommand(command);
+		_gatherResourceCommandExecutor?.TryExecuteCommand(command);
 
 		if (_commandsAwaitingExecution.Count > 0)
 		{

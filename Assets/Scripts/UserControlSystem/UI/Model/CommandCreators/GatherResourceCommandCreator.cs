@@ -1,12 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class GatherResourceCommandCreator : CommandCreatorBase<IGatherResourceCommand>
+public class GatherResourceCommandCreator : CancellableCommandCreatorBase<IGatherResourceCommand, IGatherable>
 {
-    protected override void ClassSpecificCommandCreation(Action<IGatherResourceCommand> creationCallback)
-    {
-        throw new NotImplementedException();
-    }
+    protected override IGatherResourceCommand CreateCommand(IGatherable argument) => new GatherResourceCommand(argument);
 }

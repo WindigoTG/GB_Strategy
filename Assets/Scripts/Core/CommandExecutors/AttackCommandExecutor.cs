@@ -56,18 +56,21 @@ public partial class AttackCommandExecutor : CommandExecutorBase<IAttackCommand>
 
 	private void StartMovingToPosition(Vector3 position)
 	{
-		_navigationState.MakeUnitMovable(true);
+		if (!_navMeshAgent.hasPath)
+		{
+			_navigationState.MakeUnitMovable(true);
+			_animator.SetTrigger("Walk");
+		}
+
 		_navMeshAgent.destination = position;
-		_animator.SetTrigger("Walk");
 	}
 
 	private void StartAttackingTargets(IAttackable target)
 	{
-		var navMeshAgent = GetComponent<NavMeshAgent>();
-		if (navMeshAgent.isActiveAndEnabled)
+		if (_navMeshAgent.isActiveAndEnabled)
 		{
-			navMeshAgent.isStopped = true;
-			navMeshAgent.ResetPath();
+			_navMeshAgent.isStopped = true;
+			_navMeshAgent.ResetPath();
 		}
 		_animator.SetTrigger("Attack");
 		target.TakeDamage(GetComponent<IDamageDealer>().Damage);

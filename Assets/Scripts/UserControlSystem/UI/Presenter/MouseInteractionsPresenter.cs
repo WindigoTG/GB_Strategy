@@ -12,7 +12,7 @@ public class MouseInteractionsPresenter : MonoBehaviour
     [Inject] private SelectableValue _selectedObject;
     [Inject] private AttackTargetValue _attackTargetObject;
     [Inject] private Vector3Value _groundClicksRMB;
-
+    [Inject] private GatherableResourceValue _gatherableResource;
 
     private Plane _groundPlane;
 
@@ -31,18 +31,22 @@ public class MouseInteractionsPresenter : MonoBehaviour
 
     private void GetSelectableValue()
     {
-        PerformRaycastToGetValue<ISelectable>(out ISelectable selectable);
+        PerformRaycastToGetValue(out ISelectable selectable);
 
         _selectedObject.SetValue(selectable);
     }
 
     private void GetAttackTargetOrPositionValue()
     {
-        PerformRaycastToGetValue<IAttackable>(out IAttackable target);
+        PerformRaycastToGetValue(out IAttackable target);
 
         _attackTargetObject.SetValue(target);
 
-        if (target == null)
+        PerformRaycastToGetValue(out IGatherable resource);
+
+        _gatherableResource.SetValue(resource);
+
+        if (target == null && resource == null)
         {
             PerformRaycastToGetGroundClick();
         }
