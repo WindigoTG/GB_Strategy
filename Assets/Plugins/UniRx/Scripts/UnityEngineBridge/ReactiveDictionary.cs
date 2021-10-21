@@ -507,6 +507,11 @@ namespace UniRx
             return ((IDictionary)inner).GetEnumerator();
         }
 
+        public void ObserveReplace(object blaBla)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

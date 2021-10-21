@@ -1,11 +1,10 @@
 using UnityEngine;
 using UniRx;
 
-public class UnitBase : MonoBehaviour, ISelectable, IAttackable, IDamageDealer
+public class UnitBase : MonoBehaviour, ISelectable, IAttackable, IHealthHolder
 {
     [SerializeField] private float _maxHealth = 100;
     [SerializeField] private Sprite _icon;
-    [SerializeField] private int _damage = 25;
 
     private Animator _animator;
     private StopCommandExecutor _stopCommand;
@@ -43,6 +42,5 @@ public class UnitBase : MonoBehaviour, ISelectable, IAttackable, IDamageDealer
     public float MaxHealth => _maxHealth;
     public Sprite Icon => _icon;
     public Vector3 CurrentPosition => transform.position;
-    public int Damage => _damage;
     public ReactiveProperty<float> ObservableHealth => _health;
 }

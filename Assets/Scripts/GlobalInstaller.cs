@@ -2,23 +2,45 @@ using UnityEngine;
 using Zenject;
 using System;
 using System.Collections.Generic;
+using UniRx;
 
 [CreateAssetMenu(fileName = "GlobalInstaller", menuName = "Installers/GlobalInstaller")]
 public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 {
 	[SerializeField] AssetsContext _legacyContext;
 	[SerializeField] Sprite _chomperSprite;
+	[SerializeField] Sprite _gathererSprite;
+
+	[SerializeField] GameObject _resorceViewPrefab;
+	[SerializeField] GameObject _factionResorcesViewPrefab;
+
+	[SerializeField] ResourceIconByType _resourceIconByTypeContainer;
 
 	Vector3Value _vector3ValueInstance = new Vector3Value();
 	AttackTargetValue _attackTargetValueInstance = new AttackTargetValue();
-	SelectableValue _selectableValue = new SelectableValue();
+	SelectableValue _selectableValueInstance = new SelectableValue();
+	GatherableResourceValue _gatherableResourceValueInstance = new GatherableResourceValue();
 
-    public override void InstallBindings()
+	Dictionary<ResourceType, int> _chomperCost = new Dictionary<ResourceType, int>() { { ResourceType.Crystal, 50} };
+	Dictionary<ResourceType, int> _gathererCost = new Dictionary<ResourceType, int>() { { ResourceType.Crystal, 30 } };
+
+	Dictionary<int, ReactiveDictionary<ResourceType, int>> _resources = new Dictionary<int, ReactiveDictionary<ResourceType, int>>()
+	{
+		{ 1, new ReactiveDictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } },
+		{ 2, new ReactiveDictionary<ResourceType, int>(){ { ResourceType.Crystal, 80 } } }
+	};
+
+	List<IResourceRecipient> _resourceRecipients = new List<IResourceRecipient>();
+
+	public override void InstallBindings()
 	{
 		Container.Bind<AssetsContext>().FromInstance(_legacyContext);
 
-		Container.Bind<CommandCreatorBase<IProduceUnitCommand>>()
-			.To<ProduceUnitCommandCreator>().AsTransient();
+		Container.Bind<CommandCreatorBase<IProduceCombatUnitCommand>>()
+			.To<ProduceCombatUnitCommandCreator>().AsTransient();
+
+		Container.Bind<CommandCreatorBase<IProduceGathererUnitCommand>>()
+			.To<ProduceGathererUnitCommandCreator>().AsTransient();
 
 		Container.Bind<CommandCreatorBase<IAttackCommand>>()
 			.To<AttackCommandCreator>().AsTransient();
@@ -38,22 +60,46 @@ public class GlobalInstaller : ScriptableObjectInstaller<GlobalInstaller>
 		Container.Bind<CommandCreatorBase<IRemoveRallyPointCommand>>()
 			.To<RemoveRallyPointCommandCreator>().AsTransient();
 
+		Container.Bind<CommandCreatorBase<IHoldPositionCommand>>()
+			.To<HoldPositionCommandCreator>().AsTransient();
+
+		Container.Bind<CommandCreatorBase<IGatherResourceCommand>>()
+			.To<GatherResourceCommandCreator>().AsTransient();
+
 		Container.Bind<CommandButtonsModel>().AsTransient();
 		Container.Bind<BottomCenterModel>().AsTransient();
 
 		Container.Bind<Vector3Value>().FromInstance(_vector3ValueInstance);
-		Container.Bind<SelectableValue>().FromInstance(_selectableValue);
+		Container.Bind<SelectableValue>().FromInstance(_selectableValueInstance);
 		Container.Bind<AttackTargetValue>().FromInstance(_attackTargetValueInstance);
+		Container.Bind<GatherableResourceValue>().FromInstance(_gatherableResourceValueInstance);
 
 		Container.Bind<IAwaitable<IAttackable>>().FromInstance(_attackTargetValueInstance);
 		Container.Bind<IAwaitable<Vector3>>().FromInstance(_vector3ValueInstance);
+		Container.Bind<IAwaitable<IGatherable>>().FromInstance(_gatherableResourceValueInstance);
 
-		Container.Bind<IObservable<ISelectable>>().FromInstance(_selectableValue);
+		Container.Bind<IObservable<ISelectable>>().FromInstance(_selectableValueInstance);
 
 		Container.Bind<float>().WithId("Chomper").FromInstance(5f);
 		Container.Bind<string>().WithId("Chomper").FromInstance("Chomper");
 		Container.Bind<Sprite>().WithId("Chomper").FromInstance(_chomperSprite);
 
+		Container.Bind<float>().WithId("Gatherer").FromInstance(3f);
+		Container.Bind<string>().WithId("Gatherer").FromInstance("Gatherer");
+		Container.Bind<Sprite>().WithId("Gatherer").FromInstance(_gathererSprite);
+
 		Container.Bind<Dictionary<int, int>>().AsSingle();
+
+		Container.Bind<Dictionary<ResourceType, int>>().WithId("Chomper").FromInstance(_chomperCost);
+		Container.Bind<Dictionary<ResourceType, int>>().WithId("Gatherer").FromInstance(_gathererCost);
+
+		Container.Bind<Dictionary<int, ReactiveDictionary<ResourceType, int>>>().FromInstance(_resources);
+
+		Container.Bind<GameObject>().WithId("FactionResources").FromInstance(_factionResorcesViewPrefab);
+		Container.Bind<GameObject>().WithId("ResourceView").FromInstance(_resorceViewPrefab);
+
+		Container.Bind<ResourceIconByType>().FromInstance(_resourceIconByTypeContainer);
+
+		Container.Bind<List<IResourceRecipient>>().FromInstance(_resourceRecipients);
 	}
 }

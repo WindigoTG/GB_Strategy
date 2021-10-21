@@ -1,0 +1,1 @@
+public interface IProduceCombatUnitCommand : IProduceUnitCommand { }

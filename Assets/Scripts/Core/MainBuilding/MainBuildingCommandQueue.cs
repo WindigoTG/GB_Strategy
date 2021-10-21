@@ -3,7 +3,8 @@ using Zenject;
 
 public class MainBuildingCommandQueue : MonoBehaviour, ICommandsQueue
 {
-	[Inject] CommandExecutorBase<IProduceUnitCommand> _produceUnitCommandExecutor;
+	[Inject] ProduceUnitCommandExecutor<IProduceCombatUnitCommand> _produceCombatUnitCommandExecutor;
+	[Inject] ProduceUnitCommandExecutor<IProduceGathererUnitCommand> _produceGathererUnitCommandExecutor;
 	[Inject] CommandExecutorBase<ISetRallyPointCommand> _setRallyPointCommandExecutor;
 	[Inject] CommandExecutorBase<IRemoveRallyPointCommand> _removeRallyPointCommandExecutor;
 
@@ -11,8 +12,11 @@ public class MainBuildingCommandQueue : MonoBehaviour, ICommandsQueue
 
 	public async void EnqueueCommand(object command)
 	{
-		await _produceUnitCommandExecutor.TryExecuteCommand(command);
+		await _produceCombatUnitCommandExecutor.TryExecuteCommand(command);
+		await _produceGathererUnitCommandExecutor.TryExecuteCommand(command);
 		await _setRallyPointCommandExecutor.TryExecuteCommand(command);
 		await _removeRallyPointCommandExecutor.TryExecuteCommand(command);
 	}
+
+	public ICommand CurrentCommand => default;
 }

@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _legacyContext: {fileID: 11400000, guid: 7b58ddbf9c00b914893a53caec0b28a5, type: 2}
   _chomperSprite: {fileID: 21300000, guid: 9908913e928c42d4f9f1891893bbc424, type: 3}
+  _gathererSprite: {fileID: 21300000, guid: ddc09816fc6f3764e963a75410c1e35e, type: 3}
+  _resorceViewPrefab: {fileID: 6646691918359449022, guid: f643ca2a83064c74baa6a80e3d23ac00, type: 3}
+  _factionResorcesViewPrefab: {fileID: 4984748644405497548, guid: 1cadfac1eb793a441b4ed4f20de5bc1a, type: 3}
+  _resourceIconByTypeContainer: {fileID: 11400000, guid: af4ff546b1721444da38db2802030c37, type: 2}

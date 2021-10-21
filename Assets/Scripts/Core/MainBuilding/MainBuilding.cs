@@ -1,7 +1,7 @@
 using UnityEngine;
 using UniRx;
 
-public class MainBuilding : MonoBehaviour, ISelectable, IAttackable
+public class MainBuilding : MonoBehaviour, ISelectable, IAttackable, IHealthHolder
 {
 	[SerializeField] private float _maxHealth = 1000;
 	[SerializeField] private Sprite _icon;
